@@ -1,0 +1,9 @@
+services:
+  rtsp-mjpeg-cache-1:
+    build: .
+    tty: true
+    environment:
+      - RTSP_URL=rtsp://127.0.0.1
+      - MJPEG_FEED=video
+    ports:
+      - "5001:5000"
