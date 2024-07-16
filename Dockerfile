@@ -7,4 +7,5 @@ RUN pip install Flask opencv-python
 WORKDIR /app
 COPY main.py /app/main.py
 EXPOSE 5000
+STOPSIGNAL SIGKILL
 CMD ["python", "main.py"]
