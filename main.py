@@ -1,10 +1,13 @@
 import cv2
 import os
 import time
+import subprocess
 from threading import Thread, Lock
+from datetime import datetime as dt
 from flask import Flask, Response
 
 RTSP_URL = str(os.getenv('RTSP_URL', 'rtsp://127.0.0.1'))
+RTSP_HOST = str(os.getenv('RTSP_HOST', '127.0.0.1'))
 MJPEG_FEED = str(os.getenv('MJPEG_FEED', 'mjpeg'))
 
 app = Flask(__name__)
@@ -12,10 +15,23 @@ lock = Lock()
 
 last_frame = None
 
+def is_host_reachable():
+    try:
+        result = subprocess.run(['ping', '-c', '1', '-W', '1', RTSP_HOST], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return result.returncode == 0
+    except Exception as e:
+        print(f"Error pinging host: {e}")
+        return False
+
 def fetch_rtsp_stream(rtsp_url):
     global last_frame
 
     while True:
+        if not is_host_reachable():
+            print(str(dt.now()).split(".")[0] + " - Host is not reachable. Retrying...")
+            time.sleep(1)
+            continue
+
         cap = cv2.VideoCapture()
 
         def open_stream():
