@@ -1,8 +1,9 @@
 FROM python:3.12-slim
 
 ENV RTSP_URL=rtsp://127.0.0.1
+ENV RTSP_HOST=127.0.0.1
 ENV MJPEG_FEED=mjpeg
-RUN apt-get update && apt-get install -y ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg iputils-ping
 RUN pip install Flask opencv-python
 WORKDIR /app
 COPY main.py /app/main.py
